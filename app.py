@@ -57,11 +57,14 @@ def load_user(user_id):
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(200), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
     done = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __repr__(self):
-        return f'<Task {self.id} - {self.text}>'
+    def __init__(self, title, user_id, done=False):
+        self.title = title
+        self.done = done
+        self.user_id = user_id
 
 def create_database():
     with app.app_context():
@@ -96,17 +99,18 @@ def index():
 @login_required
 def get_tasks():
     tasks = Task.query.filter_by(user_id=current_user.id).all()
-    return jsonify([{'id': task.id, 'text': task.text, 'done': task.done} for task in tasks])
+    return jsonify([{'id': task.id, 'title': task.title, 'done': task.done} for task in tasks])
 
 
 @app.route('/tasks', methods=['POST'])
 @login_required
 def add_task():
-    task_data = request.get_json()
-    new_task = Task(text=task_data['text'], done=task_data['done'], user_id=current_user.id)
-    db.session.add(new_task)
+    title = request.get_json()['title']
+    done = request.get_json()['done']
+    task = Task(title=title, done=done, user_id=current_user.id)
+    db.session.add(task)
     db.session.commit()
-    return jsonify({'id': new_task.id, 'text': new_task.text, 'done': new_task.done})
+    return jsonify({'id': task.id, 'title': task.title, 'done': task.done}), 200
 
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
 @login_required

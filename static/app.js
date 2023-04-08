@@ -34,23 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     async function addTask(taskText) {
-      const task = { text: taskText, done: false };
-      const response = await fetch('/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(task)
-      });
-      if (response.status === 200) {
-        const newTask = await response.json();
-        const listItem = createListItem(newTask);
-        taskList.appendChild(listItem);
-      } else {
-        console.error('Error adding task:', response.statusText);
+        const task = { title: taskText, done: false };
+        const response = await fetch('/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(task)
+        });
+        if (response.status === 200) {
+          const newTask = await response.json();
+          const listItem = createListItem(newTask);
+          taskList.appendChild(listItem);
+        } else {
+          console.error('Error adding task:', response.statusText);
+        }
       }
       
-      const listItem = createListItem(newTask);
-      taskList.appendChild(listItem);
-    }
   
     function createListItem(task) {
       const listItem = document.createElement('li');
@@ -61,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         listItem.classList.add('list-group-item-success');
       }
       listItem.innerHTML = `
-        ${task.text}
+        ${task.title}
         <div>
           <button class="btn btn-success btn-sm mark-task">${task.done ? 'Not Done' : 'Done'}</button>
           <button class="btn btn-danger btn-sm delete-task">Delete</button>
