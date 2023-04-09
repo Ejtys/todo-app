@@ -12,6 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
         taskInput.value = '';
       }
     });
+
+    taskInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        // Enter key was pressed
+        if (taskInput.value.trim()) {
+          addTask(taskInput.value.trim());
+          taskInput.value = '';
+        }
+      }
+    });
   
     taskList.addEventListener('click', (event) => {
       const listItem = event.target.parentElement.parentElement;
