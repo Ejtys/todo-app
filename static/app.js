@@ -13,15 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    taskInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        // Enter key was pressed
-        if (taskInput.value.trim()) {
-          addTask(taskInput.value.trim());
-          taskInput.value = '';
-        }
-      }
+    document.addEventListener('keydown', handleKeyPress);
+    
+    taskInput.addEventListener('focus', () => {
+      deselectTaskItems();
     });
+
   
     taskList.addEventListener('click', (event) => {
       const listItem = event.target.parentElement.parentElement;
@@ -59,7 +56,77 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       
-  
+      
+      function handleKeyPress(event) {
+        if (event.key === 'Tab') {
+          event.preventDefault(); // Prevent default tab behavior
+          if (document.activeElement === taskInput) {
+            // Move focus to the first task item
+            taskInput.blur();
+            const firstItem = taskList.querySelector('li');
+            if (firstItem) {
+              firstItem.classList.add('selected');
+              firstItem.focus();
+            }
+          } else {
+            // Move focus back to the input box
+            taskInput.focus();
+            deselectTaskItems();
+          }
+        }
+
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+          event.preventDefault();
+          const currentItem = document.querySelector('.selected');
+          let nextItem = null;
+          if (event.key === 'ArrowUp') {
+            nextItem = currentItem.previousElementSibling || taskList.lastElementChild;
+          } else {
+            nextItem = currentItem.nextElementSibling || taskList.firstElementChild;
+          }
+          currentItem.classList.remove('selected');
+          currentItem.blur();
+          nextItem.classList.add('selected');
+          nextItem.focus();
+        }
+
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+          const currentItem = document.querySelector('.selected');
+          const nextItem = currentItem.nextElementSibling || taskList.firstElementChild;
+          const taskId = currentItem.dataset.taskId;
+          removeTask(taskId);
+          if (nextItem) {
+            nextItem.classList.add('selected');
+            nextItem.focus();
+          }
+        }
+
+        if (event.key === 'Enter') {
+
+          if (document.activeElement === taskInput) {
+            // Enter key was pressed
+            if (taskInput.value.trim()) {
+              addTask(taskInput.value.trim());
+              taskInput.value = '';
+            }
+          }
+          else {
+            const currentItem = document.querySelector('.selected');
+            const taskId = currentItem.dataset.taskId;
+            toggleTaskDone(taskId);
+          }
+        }
+        
+      }
+
+    function deselectTaskItems() {
+      const selectedItems = document.querySelectorAll('.selected');
+      selectedItems.forEach((item) => {
+        item.classList.remove('selected');
+        item.blur();
+      });
+    }
+
     function createListItem(task) {
       const listItem = document.createElement('li');
       listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');

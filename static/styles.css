@@ -1,0 +1,10 @@
+.selected {
+    border: 2px solid #244f7d;
+}
+
+.list-group-item.selected {
+  border: 2px solid black;
+  z-index: 1;
+  position: relative;
+}
+  
