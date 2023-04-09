@@ -17,5 +17,4 @@ Database: SQLite (Replace with your choice of database)
 About this project
 This Task Manager App was created as a learning project with the assistance of OpenAI's ChatGPT, a powerful AI language model. The app was built to demonstrate the capabilities of using AI in the process of learning and developing web applications.
 
-License
-This project is licensed under the MIT License.
+
