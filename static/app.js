@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('keydown', handleKeyPress);
-    
+
     taskInput.addEventListener('focus', () => {
       deselectTaskItems();
     });
@@ -142,6 +142,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <button class="btn btn-danger btn-sm delete-task">Delete</button>
         </div>
       `;
+      listItem.addEventListener('click', (event) => {
+        // Don't trigger when clicking on buttons inside the list item
+        if (!event.target.classList.contains('btn')) {
+          deselectTaskItems();
+          taskInput.blur();
+          listItem.classList.add('selected');
+          listItem.focus();
+        }
+      });
       return listItem;
     }
   
